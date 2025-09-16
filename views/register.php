@@ -1,3 +1,30 @@
+<?php
+session_start();
+require_once __DIR__ . '/../vendor/classes/User.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['confirmPassword'])) {
+    $login = $_POST['login'];
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirmPassword'];
+
+    $user = new User($login, $password);
+
+    if ($user->register($login, $password, $confirmPassword)) {
+      header("Location: /success");
+      exit();
+    } else {
+      $_SESSION['old_login'] = $login;
+      header("Location: /register");
+      exit();
+    }
+  } else {
+    $_SESSION['general'] = 'Все поля обязательны для заполнения';
+    header("Location: /register");
+    exit();
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -8,7 +35,6 @@
   <link href="../css/base.css" rel="stylesheet" />
   <link href="../css/register.css" rel="stylesheet" />
 </head>
-
 
 <body>
   <header class="header">
@@ -30,19 +56,40 @@
       <div class="reg-form__group">
         <label for="login" class="reg-form__label">Логин</label>
         <input type="text" id="login" name="login" class="reg-form__input" required>
-        <span class="reg-form__error" id="loginError"></span>
+        <span class="reg-form__error" id="loginError">
+          <?php
+          if (isset($_SESSION['login'])) {
+            echo $_SESSION['login'];
+            unset($_SESSION['login']);
+          }
+          ?>
+        </span>
       </div>
 
       <div class="reg-form__group">
         <label for="password" class="reg-form__label">Пароль</label>
         <input type="password" id="password" name="password" class="reg-form__input" required>
-        <span class="reg-form__error" id="passwordError"></span>
+        <span class="reg-form__error" id="passwordError">
+          <?php
+          if (isset($_SESSION['password'])) {
+            echo $_SESSION['password'];
+            unset($_SESSION['password']);
+          }
+          ?>
+        </span>
       </div>
 
       <div class="reg-form__group">
         <label for="confirmPassword" class="reg-form__label">Повторите пароль</label>
         <input type="password" id="confirmPassword" name="confirmPassword" class="reg-form__input" required>
-        <span class="reg-form__error" id="confirmPasswordError"></span>
+        <span class="reg-form__error" id="confirmPasswordError">
+          <?php
+          if (isset($_SESSION['confirmPassword'])) {
+            echo $_SESSION['confirmPassword'];
+            unset($_SESSION['confirmPassword']);
+          }
+          ?>
+        </span>
       </div>
 
       <button type="submit" class="reg-form__button">Зарегистрироваться</button>

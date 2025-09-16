@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -8,7 +11,6 @@
   <link href="../css/base.css" rel="stylesheet" />
   <link href="../css/404.css" rel="stylesheet" />
 </head>
-
 
 <body>
   <header class="header">

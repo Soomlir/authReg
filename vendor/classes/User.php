@@ -95,35 +95,42 @@ class User
     $this->login = null;
     $this->is_logged_in = false;
   }
-
   public function register($login, $password, $confirmPassword)
   {
     $login = trim($login);
     $password = trim($password);
     $confirmPassword = trim($confirmPassword);
 
+    unset($_SESSION['login'], $_SESSION['password'], $_SESSION['confirmPassword'], $_SESSION['general']);
+
+    $hasErrors = false;
+
     if (empty($login)) {
       $_SESSION['login'] = 'Логин обязателен';
+      $hasErrors = true;
+    } elseif (strlen($login) < 3) {
+      $_SESSION['login'] = 'Логин должен быть не менее 3 символов';
+      $hasErrors = true;
     }
 
     if (empty($password)) {
       $_SESSION['password'] = 'Пароль обязателен';
+      $hasErrors = true;
+    } elseif (strlen($password) < 6) {
+      $_SESSION['password'] = 'Пароль должен быть не менее 6 символов';
+      $hasErrors = true;
     }
 
     if (empty($confirmPassword)) {
       $_SESSION['confirmPassword'] = 'Подтверждение пароля обязательно';
-    }
-
-    if (strlen($login) < 3) {
-      $_SESSION['login'] = 'Логин должен быть не менее 3 символов';
-    }
-
-    if (strlen($password) < 6) {
-      $_SESSION['password'] = 'Пароль должен быть не менее 6 символов';
-    }
-
-    if ($password !== $confirmPassword) {
+      $hasErrors = true;
+    } elseif ($password !== $confirmPassword) {
       $_SESSION['confirmPassword'] = 'Пароли не совпадают';
+      $hasErrors = true;
+    }
+
+    if ($hasErrors) {
+      return false;
     }
 
     try {
@@ -133,6 +140,7 @@ class User
 
       if ($stmt->rowCount() > 0) {
         $_SESSION['login'] = 'Логин уже занят';
+        return false;
       }
 
       $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -143,11 +151,15 @@ class User
 
       if ($stmt->execute()) {
         $_SESSION['success'] = 'Регистрация успешна';
+        return true;
       } else {
         $_SESSION['general'] = 'Ошибка при регистрации';
+        return false;
       }
     } catch (PDOException $e) {
       error_log("Registration error: " . $e->getMessage());
+      $_SESSION['general'] = 'Ошибка сервера при регистрации';
+      return false;
     }
   }
 }

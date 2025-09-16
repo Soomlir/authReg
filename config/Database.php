@@ -17,7 +17,6 @@ class Database
     $this->connect();
   }
 
-
   private function loadConfig(): void
   {
     $this->host = $_ENV['DB_HOST'] ?? 'MySQL-8.0';
@@ -42,7 +41,6 @@ class Database
       throw new PDOException("Connection failed: " . $e->getMessage());
     }
   }
-
 
   public static function getInstance(): self
   {
