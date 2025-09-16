@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -23,19 +26,33 @@
   <main class="content">
     <p class="content__text">Для доступа к дополнительным возможностям, пожалуйста, авторизуйтесь.</p>
 
-    <form class="auth-form" action="/login" method="post">
+    <form class="auth-form" action="/auth" method="post">
       <h2 class="auth-form__title">Форма авторизации</h2>
 
       <div class="auth-form__group">
         <label for="login" class="auth-form__label">Логин</label>
         <input type="text" id="login" name="login" class="auth-form__input" required>
-        <span class="auth-form__error-login"></span>
+        <span class="auth-form__error-login">
+          <?php
+          if (isset($_SESSION['error-login'])) {
+            echo $_SESSION['error-login'];
+            unset($_SESSION['error-login']);
+          }
+          ?>
+        </span>
       </div>
 
       <div class="auth-form__group">
         <label for="password" class="auth-form__label">Пароль</label>
         <input type="password" id="password" name="password" class="auth-form__input" required>
-        <span class="auth-form__error-password"></span>
+        <span class="auth-form__error-login">
+          <?php
+          if (isset($_SESSION['error-password'])) {
+            echo $_SESSION['error-password'];
+            unset($_SESSION['error-password']);
+          }
+          ?>
+        </span>
       </div>
 
       <button type="submit" class="auth-form__button">Войти</button>
