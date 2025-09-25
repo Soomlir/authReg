@@ -18,4 +18,4 @@
 
 ![Страница регистрации](./images/image-2.jpg)
 
-![Личный кабинет](./images/image-2.jpg)
+![Личный кабинет](./images/image-3.jpg)
